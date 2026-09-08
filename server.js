@@ -100,7 +100,12 @@ function cosine(a, b) {
 }
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, llmConfigured: Boolean(openai), sourceCount: db.prepare('SELECT COUNT(*) AS n FROM sources').get().n, chunkCount: db.prepare('SELECT COUNT(*) AS n FROM chunks').get().n });
+  res.json({
+    ok: true,
+    llmConfigured: Boolean(openai),
+    sourceCount: db.prepare('SELECT COUNT(*) AS n FROM sources').get().n,
+    chunkCount: db.prepare('SELECT COUNT(*) AS n FROM chunks').get().n
+  });
 });
 
 app.get('/api/sources', (_req, res) => {
@@ -156,7 +161,7 @@ app.post('/api/ask', async (req, res) => {
 
     const [qEmbedding] = await embedMany([question]);
     const rows = db.prepare(`
-      SELECT c.id AS chunk_id, c.content, c.content_hash, c.chunk_index,
+      SELECT c.id AS chunk_id, c.content, c.content_hash, c.chunk_index, c.embedding_json,
              s.id AS source_id, s.title, s.source_url, s.publisher, s.version, s.content_hash AS source_hash
       FROM chunks c JOIN sources s ON s.id = c.source_id
     `).all();
@@ -164,12 +169,9 @@ app.post('/api/ask', async (req, res) => {
 
     const topK = Math.max(1, Math.min(Number(process.env.TOP_K || 5), 10));
     const evidence = rows
-      .map((r) => ({ ...r, score: cosine(qEmbedding, JSON.parse(r.embedding_json || '[]')) }))
+      .map((r) => ({ ...r, score: cosine(qEmbedding, JSON.parse(r.embedding_json)) }))
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
-
-    // Backward compatibility for rows selected before embedding_json was included.
-    if (evidence.some((e) => Number.isNaN(e.score))) throw new Error('Invalid stored embedding');
 
     const context = evidence.map((e, i) =>
       `[E${i + 1}] ${e.title}${e.version ? ` (${e.version})` : ''}\nSource: ${e.source_url}\nChunk: ${e.chunk_id}\n${e.content}`
