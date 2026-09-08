@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Data Provenance RAG</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <p class="eyebrow">Minimal RAG</p>
+      <h1>AI Data Provenance</h1>
+      <p class="sub">Ask questions against your ingested evidence. Every answer shows the exact source and chunk retrieved.</p>
+    </header>
+
+    <section class="card chat-card">
+      <div id="messages" class="messages">
+        <div class="message system">Ingest at least one source, then ask a question about AI data provenance, lineage, governance, or evidence.</div>
+      </div>
+      <form id="askForm" class="ask-form">
+        <textarea id="question" rows="3" placeholder="e.g. What is AI data provenance and why does it matter?" required></textarea>
+        <button type="submit">Ask</button>
+      </form>
+    </section>
+
+    <section class="grid">
+      <section class="card">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Knowledge base</p>
+            <h2>Ingest source</h2>
+          </div>
+        </div>
+        <form id="ingestForm" class="stack">
+          <input id="title" placeholder="Source title" required />
+          <input id="sourceUrl" type="url" placeholder="Canonical source URL" required />
+          <input id="publisher" placeholder="Publisher (optional)" />
+          <input id="version" placeholder="Version / date (optional)" />
+          <textarea id="content" rows="12" placeholder="Paste the source text here" required></textarea>
+          <button type="submit">Ingest and index</button>
+          <p class="hint">This minimal build intentionally does not scrape arbitrary URLs. You provide the canonical URL and the text you are authorized to ingest.</p>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Provenance</p>
+            <h2>Sources</h2>
+          </div>
+          <button id="refreshSources" class="ghost" type="button">Refresh</button>
+        </div>
+        <div id="sourceList" class="source-list"></div>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
