@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ai-data-provenance-rag
+    runtime: docker
+    plan: starter
+    numInstances: 1
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CHAT_MODEL
+        value: gpt-5.6-luna
+      - key: EMBEDDING_MODEL
+        value: text-embedding-3-small
+      - key: TOP_K
+        value: "5"
+      - key: DB_PATH
+        value: /var/data/rag.db
+    disk:
+      name: rag-data
+      mountPath: /var/data
+      sizeGB: 1
