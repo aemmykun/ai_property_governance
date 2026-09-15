@@ -190,13 +190,19 @@ app.post('/api/ask', async (req, res) => {
     const evidence = [];
     for (const row of rows) {
       const scored = { ...row, score: cosine(qEmbedding, JSON.parse(row.embedding_json)) };
+      if (evidence.length < topK) {
+        evidence.push(scored);
+        evidence.sort((a, b) => b.score - a.score);
+        continue;
+      }
+      if (scored.score <= evidence[evidence.length - 1].score) continue;
       const insertAt = evidence.findIndex((item) => scored.score > item.score);
       if (insertAt === -1) {
-        if (evidence.length < topK) evidence.push(scored);
+        evidence[evidence.length - 1] = scored;
       } else {
         evidence.splice(insertAt, 0, scored);
-        if (evidence.length > topK) evidence.pop();
       }
+      evidence.pop();
     }
 
     const context = evidence.map((e, i) =>
