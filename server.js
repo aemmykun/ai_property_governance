@@ -218,7 +218,14 @@ app.post('/api/ask', async (req, res) => {
       ]
     });
 
-    const answer = response.choices?.[0]?.message?.content?.trim() || 'No answer returned.';
+    const messageContent = response.choices?.[0]?.message?.content;
+    const answer = (
+      typeof messageContent === 'string'
+        ? messageContent
+        : Array.isArray(messageContent)
+          ? messageContent.map((part) => part.type === 'text' ? part.text : '').join('')
+          : ''
+    ).trim() || 'No answer returned.';
     res.json({
       answer,
       model,
