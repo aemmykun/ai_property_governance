@@ -53,6 +53,8 @@ class GovernanceChunk {
     required this.effectiveTo,
     required this.contentHash,
     required this.tags,
+    required this.provenance,
+    this.accessPolicy,
   });
 
   final String chunkId;
@@ -69,6 +71,8 @@ class GovernanceChunk {
   final DateTime? effectiveTo;
   final String contentHash;
   final List<String> tags;
+  final GovernanceProvenance provenance;
+  final ChunkAccessPolicy? accessPolicy;
 
   factory GovernanceChunk.fromJson(Map<String, dynamic> json) => GovernanceChunk(
         chunkId: json['chunkId'] as String,
@@ -89,6 +93,54 @@ class GovernanceChunk {
             : DateTime.parse(json['effectiveTo'] as String),
         contentHash: json['contentHash'] as String,
         tags: List<String>.from(json['tags'] as List),
+        provenance:
+            GovernanceProvenance.fromJson(json['provenance'] as Map<String, dynamic>),
+        accessPolicy: json['accessPolicy'] == null
+            ? null
+            : ChunkAccessPolicy.fromJson(json['accessPolicy'] as Map<String, dynamic>),
+      );
+}
+
+class GovernanceProvenance {
+  GovernanceProvenance({
+    required this.canonicalUrl,
+    required this.retrievedAt,
+    required this.parserVersion,
+    required this.sourceHash,
+    required this.licenceStatus,
+    this.sourceVersion,
+  });
+
+  final String canonicalUrl;
+  final String retrievedAt;
+  final String parserVersion;
+  final String sourceHash;
+  final String licenceStatus;
+  final String? sourceVersion;
+
+  factory GovernanceProvenance.fromJson(Map<String, dynamic> json) =>
+      GovernanceProvenance(
+        canonicalUrl: json['canonicalUrl'] as String,
+        retrievedAt: json['retrievedAt'] as String,
+        parserVersion: json['parserVersion'] as String,
+        sourceHash: json['sourceHash'] as String,
+        licenceStatus: json['licenceStatus'] as String,
+        sourceVersion: json['sourceVersion'] as String?,
+      );
+}
+
+class ChunkAccessPolicy {
+  ChunkAccessPolicy({
+    required this.tenantIds,
+    required this.roles,
+  });
+
+  final List<String> tenantIds;
+  final List<String> roles;
+
+  factory ChunkAccessPolicy.fromJson(Map<String, dynamic> json) => ChunkAccessPolicy(
+        tenantIds: List<String>.from(json['tenantIds'] as List),
+        roles: List<String>.from(json['roles'] as List),
       );
 }
 
@@ -134,6 +186,22 @@ class BenchmarkResult {
   final String answer;
   final int candidateCount;
   final List<EvidenceDecision> allowed;
-  final List<EvidenceDecision> denied;
+  final List<DeniedEvidenceDecision> denied;
   final String eebId;
+}
+
+class DeniedEvidenceDecision {
+  DeniedEvidenceDecision({
+    required this.chunkId,
+    required this.sourceId,
+    required this.frameworkId,
+    required this.structuralPath,
+    required this.reasons,
+  });
+
+  final String chunkId;
+  final String sourceId;
+  final String frameworkId;
+  final String structuralPath;
+  final List<String> reasons;
 }
