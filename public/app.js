@@ -26,7 +26,7 @@ async function refreshSources() {
       <article class="source-item">
         <div class="source-head"><strong>${esc(s.title)}</strong><span>${Number(s.chunk_count)} chunks</span></div>
         <div class="meta">${esc(s.publisher || 'Unknown publisher')}${s.version ? ` · ${esc(s.version)}` : ''}</div>
-        <a href="${esc(s.source_url)}" target="_blank" rel="noreferrer">${esc(s.source_url)}</a>
+        <a href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_url)}</a>
         <code>source ${esc(s.id)} · sha256 ${esc(s.content_hash).slice(0, 16)}…</code>
       </article>
     `).join('') : '<p class="empty">No sources ingested yet.</p>';
@@ -77,7 +77,7 @@ $('askForm').addEventListener('submit', async (event) => {
       <details class="evidence">
         <summary>[${esc(e.ref)}] ${esc(e.sourceTitle)} · similarity ${e.similarity}</summary>
         <p>${esc(e.excerpt)}</p>
-        <a href="${esc(e.sourceUrl)}" target="_blank" rel="noreferrer">Open canonical source</a>
+        <a href="${esc(e.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open canonical source</a>
         <code>source ${esc(e.sourceId)} · chunk ${esc(e.chunkId)}</code>
         <code>source sha256 ${esc(e.sourceHash)}</code>
         <code>chunk sha256 ${esc(e.chunkHash)}</code>
