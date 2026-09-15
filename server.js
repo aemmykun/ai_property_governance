@@ -223,7 +223,11 @@ app.post('/api/ask', async (req, res) => {
       typeof messageContent === 'string'
         ? messageContent
         : Array.isArray(messageContent)
-          ? messageContent.map((part) => part.type === 'text' ? part.text : '').join('')
+          ? messageContent.map((part) => {
+            if (part.type !== 'text') return '';
+            if (typeof part.text === 'string') return part.text;
+            return typeof part.text?.value === 'string' ? part.text.value : '';
+          }).join('')
           : ''
     ).trim() || 'No answer returned.';
     res.json({
