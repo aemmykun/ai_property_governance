@@ -140,7 +140,10 @@ app.post('/api/ingest', async (req, res) => {
     }
     const pieces = chunkText(content);
     if (!pieces.length) return res.status(400).json({ error: 'No ingestible text found' });
-    const maxIngestChunks = Math.max(1, Math.floor(Number(process.env.MAX_INGEST_CHUNKS || 200)));
+    const configuredMaxIngestChunks = Number(process.env.MAX_INGEST_CHUNKS);
+    const maxIngestChunks = Number.isFinite(configuredMaxIngestChunks)
+      ? Math.max(1, Math.floor(configuredMaxIngestChunks))
+      : 200;
     if (pieces.length > maxIngestChunks) {
       return res.status(400).json({ error: `Content exceeds chunk limit (${maxIngestChunks})` });
     }
