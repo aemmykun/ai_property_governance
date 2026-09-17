@@ -1,0 +1,50 @@
+[
+  {
+    "sourceId": "eu-ai-act-2024",
+    "title": "EU Artificial Intelligence Act",
+    "publisher": "European Union",
+    "frameworkId": "eu_ai_act_2024",
+    "jurisdictions": ["EU"],
+    "bindingStatus": "binding",
+    "authorityType": "statutory_law",
+    "canonicalUrl": "TO_VERIFY_AT_INGESTION",
+    "sourceVersion": "2024",
+    "licenceId": "source-specific"
+  },
+  {
+    "sourceId": "nist-ai-rmf-1-0",
+    "title": "NIST AI Risk Management Framework 1.0",
+    "publisher": "NIST",
+    "frameworkId": "nist_ai_rmf_1_0",
+    "jurisdictions": ["GLOBAL"],
+    "bindingStatus": "voluntary",
+    "authorityType": "voluntary_framework",
+    "canonicalUrl": "TO_VERIFY_AT_INGESTION",
+    "sourceVersion": "1.0",
+    "licenceId": "source-specific"
+  },
+  {
+    "sourceId": "oecd-ai-principles",
+    "title": "OECD AI Principles",
+    "publisher": "OECD",
+    "frameworkId": "oecd_ai_principles",
+    "jurisdictions": ["GLOBAL"],
+    "bindingStatus": "advisory",
+    "authorityType": "intergovernmental_principles",
+    "canonicalUrl": "TO_VERIFY_AT_INGESTION",
+    "sourceVersion": "current-at-ingestion",
+    "licenceId": "source-specific"
+  },
+  {
+    "sourceId": "unesco-ai-ethics",
+    "title": "UNESCO Recommendation on the Ethics of Artificial Intelligence",
+    "publisher": "UNESCO",
+    "frameworkId": "unesco_ai_ethics",
+    "jurisdictions": ["GLOBAL"],
+    "bindingStatus": "advisory",
+    "authorityType": "intergovernmental_recommendation",
+    "canonicalUrl": "TO_VERIFY_AT_INGESTION",
+    "sourceVersion": "2021",
+    "licenceId": "source-specific-review-required"
+  }
+]

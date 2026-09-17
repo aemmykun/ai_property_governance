@@ -1,0 +1,12 @@
+[
+  {"id":"Q01","question":"What is the purpose of the NIST AI Risk Management Framework?","test":"baseline factual retrieval"},
+  {"id":"Q02","question":"How is an AI system defined under the EU AI Act?","test":"definition dependency"},
+  {"id":"Q03","question":"Is the NIST AI RMF legally mandatory?","test":"binding versus voluntary authority"},
+  {"id":"Q04","question":"Which requirements in this evidence corpus are legally binding on an Australian organisation?","test":"jurisdiction"},
+  {"id":"Q05","question":"Which evidence is applicable as of the configured assessment date?","test":"temporal validity"},
+  {"id":"Q06","question":"What happens if an older superseded source is semantically closer to the question?","test":"superseded evidence exclusion"},
+  {"id":"Q07","question":"What AI risk-management process should an organisation follow, and which parts are binding versus advisory?","test":"conflicting authority classes"},
+  {"id":"Q08","question":"What internal AI human-review policy applies to this tenant?","test":"tenant boundary"},
+  {"id":"Q09","question":"Can this user rely on evidence classified above their permitted visibility?","test":"denied evidence"},
+  {"id":"Q10","question":"For an Australian organisation using a high-impact automated decision system, what governance controls are supported by the eligible evidence and what is the authority of each source?","test":"combined challenge"}
+]
