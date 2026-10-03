@@ -46,10 +46,13 @@ function requireApiKey(req, res, next) {
   if (!configuredKey) {
     return res.status(503).json({ error: 'APP_API_KEY is not configured' });
   }
-  const authorization = req.get('authorization')?.match(/^Bearer\s+(.+)$/i);
+  const authorization = req.get('authorization') || '';
+  const separator = authorization.indexOf(' ');
+  const scheme = authorization.slice(0, separator).toLowerCase();
+  const token = separator < 0 ? '' : authorization.slice(separator + 1).trim();
   const expected = Buffer.from(configuredKey);
-  const provided = Buffer.from(authorization?.[1] || '');
-  if (expected.length !== provided.length || !crypto.timingSafeEqual(expected, provided)) {
+  const provided = Buffer.from(token);
+  if (scheme !== 'bearer' || !token || expected.length !== provided.length || !crypto.timingSafeEqual(expected, provided)) {
     return res.status(401).json({ error: 'A valid API access key is required' });
   }
   next();

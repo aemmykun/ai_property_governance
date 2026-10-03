@@ -14,11 +14,6 @@ async function jsonFetch(url, options = {}) {
   return body;
 }
 
-$('apiKey').value = sessionStorage.getItem('apiKey') || '';
-$('apiKey').addEventListener('input', () => {
-  sessionStorage.setItem('apiKey', $('apiKey').value);
-});
-
 function addMessage(kind, html) {
   const el = document.createElement('div');
   el.className = `message ${kind}`;
