@@ -5,11 +5,19 @@ function esc(value = '') {
 }
 
 async function jsonFetch(url, options = {}) {
-  const res = await fetch(url, { headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options });
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  const apiKey = $('apiKey').value.trim();
+  if (apiKey) headers.Authorization = 'Bearer ' + apiKey;
+  const res = await fetch(url, { ...options, headers });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
   return body;
 }
+
+$('apiKey').value = sessionStorage.getItem('apiKey') || '';
+$('apiKey').addEventListener('input', () => {
+  sessionStorage.setItem('apiKey', $('apiKey').value);
+});
 
 function addMessage(kind, html) {
   const el = document.createElement('div');

@@ -42,13 +42,14 @@ answer + exact source/chunk provenance
 
 ## Run locally
 
-Requires Node.js 20+ and an OpenAI API key.
+Requires Node.js 20+, an OpenAI API key, and an API access key for protected app endpoints.
 
 ```bash
 cp .env.example .env
-# add OPENAI_API_KEY to your environment
+# set OPENAI_API_KEY and APP_API_KEY in .env
+# generate APP_API_KEY with: openssl rand -hex 32
 npm install
-OPENAI_API_KEY=your_key npm start
+npm start
 ```
 
 Open `http://localhost:3000`.
@@ -57,6 +58,7 @@ Environment variables:
 
 - `OPENAI_API_KEY` — required for embeddings and answer generation
 - `OPENAI_BASE_URL` — optional compatible endpoint
+- `APP_API_KEY` — required to access sources, ingest evidence, and ask questions; enter it in the app's API access key field
 - `CHAT_MODEL` — defaults to `gpt-5.6-luna`
 - `EMBEDDING_MODEL` — defaults to `text-embedding-3-small`
 - `TOP_K` — retrieved chunks, default `5`
@@ -66,6 +68,8 @@ Environment variables:
 ## Ingesting evidence
 
 The first version intentionally does not fetch arbitrary remote URLs. Use the ingestion panel to paste text you are permitted to store and give it the canonical source URL. This avoids an unnecessary web-scraping/SSRF surface while keeping provenance explicit.
+
+The ingest, source-list, and question endpoints require a bearer token matching `APP_API_KEY`. The service also limits these authenticated endpoints to 30 requests per minute per instance. Configure `APP_API_KEY` as a secret in the deployment environment and share it only with authorized users.
 
 Good initial subjects for the corpus include AI data provenance, data lineage, AI governance, evidence traceability, RAG governance, and public regulatory/framework material whose reuse conditions you have verified.
 

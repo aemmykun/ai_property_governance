@@ -41,6 +41,39 @@ const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY, baseURL: process.env.OPENAI_BASE_URL || undefined })
   : null;
 
+function requireApiKey(req, res, next) {
+  const configuredKey = process.env.APP_API_KEY;
+  if (!configuredKey) {
+    return res.status(503).json({ error: 'APP_API_KEY is not configured' });
+  }
+  const authorization = req.get('authorization')?.match(/^Bearer\s+(.+)$/i);
+  const expected = Buffer.from(configuredKey);
+  const provided = Buffer.from(authorization?.[1] || '');
+  if (expected.length !== provided.length || !crypto.timingSafeEqual(expected, provided)) {
+    return res.status(401).json({ error: 'A valid API access key is required' });
+  }
+  next();
+}
+
+const apiRequestLimit = 30;
+const apiRequestWindowMs = 60_000;
+let apiRequestWindowStartedAt = Date.now();
+let apiRequestCount = 0;
+
+function limitApiRequests(_req, res, next) {
+  const now = Date.now();
+  if (now - apiRequestWindowStartedAt >= apiRequestWindowMs) {
+    apiRequestWindowStartedAt = now;
+    apiRequestCount = 0;
+  }
+  if (apiRequestCount >= apiRequestLimit) {
+    return res.status(429).json({ error: 'Too many requests. Try again shortly.' });
+  }
+  apiRequestCount++;
+  next();
+}
+
+app.use(['/api/ingest', '/api/ask', '/api/sources'], requireApiKey, limitApiRequests);
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -97,11 +130,13 @@ async function embedMany(inputs) {
 }
 
 function cosine(a, b) {
+  if (a.length !== b.length) {
+    throw new Error('Embedding dimensions do not match. Re-ingest sources with the current embedding model.');
+  }
   let dot = 0;
   let a2 = 0;
   let b2 = 0;
-  const n = Math.min(a.length, b.length);
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < a.length; i++) {
     dot += a[i] * b[i];
     a2 += a[i] * a[i];
     b2 += b[i] * b[i];
@@ -189,7 +224,10 @@ app.post('/api/ask', async (req, res) => {
     `).all();
     if (!rows.length) return res.status(409).json({ error: 'No sources have been ingested yet' });
 
-    const topK = Math.max(1, Math.min(Number(process.env.TOP_K || 5), 10));
+    const configuredTopK = Number(process.env.TOP_K || 5);
+    const topK = Number.isFinite(configuredTopK)
+      ? Math.max(1, Math.min(Math.floor(configuredTopK), 10))
+      : 5;
     const evidence = [];
     for (const row of rows) {
       const scored = { ...row, score: cosine(qEmbedding, JSON.parse(row.embedding_json)) };

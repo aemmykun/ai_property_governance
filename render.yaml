@@ -8,6 +8,8 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false
+      - key: APP_API_KEY
+        sync: false
       - key: CHAT_MODEL
         value: gpt-5.6-luna
       - key: EMBEDDING_MODEL
