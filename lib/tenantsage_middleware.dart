@@ -27,23 +27,23 @@ class TenantSageMiddleware {
       ..sort((a, b) => a.chunkId.compareTo(b.chunkId));
     final eligibleBoundary = eligibleChunks
         .map(
-          (chunk) => [
-            chunk.chunkId,
-            chunk.contentHash,
-            chunk.provenance.sourceHash,
-            chunk.provenance.sourceVersion ?? '',
-          ].join(':'),
+          (chunk) => {
+            'chunkId': chunk.chunkId,
+            'contentHash': chunk.contentHash,
+            'sourceHash': chunk.provenance.sourceHash,
+            'sourceVersion': chunk.provenance.sourceVersion ?? '',
+          },
         )
-        .join('|');
+        .toList();
 
-    final canonical = [
-      request.tenantId,
-      request.role,
-      request.jurisdiction,
-      request.purpose,
-      request.asOf.toUtc().toIso8601String(),
-      eligibleBoundary,
-    ].join('|');
+    final canonical = jsonEncode({
+      'tenantId': request.tenantId,
+      'role': request.role,
+      'jurisdiction': request.jurisdiction,
+      'purpose': request.purpose,
+      'asOf': request.asOf.toUtc().toIso8601String(),
+      'eligibleBoundary': eligibleBoundary,
+    });
 
     final eebId = sha256.convert(utf8.encode(canonical)).toString();
 
