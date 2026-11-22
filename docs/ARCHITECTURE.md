@@ -1,6 +1,29 @@
-# TenantSage Governed-Evidence Benchmark
+# Repository architecture
 
-## Objective
+## Minimal RAG application
+
+```text
+Browser UI
+  ├─ Ingest form
+  │    └─ POST /api/ingest
+  │         ├─ chunk text
+  │         ├─ embed chunks
+  │         └─ SQLite: sources + chunks
+  │
+  └─ Chat form
+       └─ POST /api/ask
+            ├─ embed question
+            ├─ cosine similarity over stored chunk embeddings
+            ├─ top-K evidence
+            ├─ LLM answer constrained to retrieved evidence
+            └─ response with answer + provenance
+```
+
+The RAG app deliberately keeps retrieval and generation in one service for the first deployment. The seam for later TenantSage integration is immediately before retrieval: middleware can evaluate the request and restrict which chunk records are eligible before cosine ranking runs.
+
+## TenantSage Governed-Evidence Benchmark
+
+### Objective
 
 Demonstrate a system-level difference, not a model competition.
 
@@ -9,7 +32,7 @@ Demonstrate a system-level difference, not a model competition.
 - The same 10 questions are asked one by one.
 - Similar answers are acceptable; the primary comparison is evidence control, provenance, eligibility and replayability.
 
-## TenantSage path
+### TenantSage path
 
 ```text
 Question
@@ -26,7 +49,7 @@ Question
 
 The LLM is downstream. No evidence is provided to generation unless it is admitted through the governed boundary.
 
-## Corpus
+### Corpus
 
 Initial target sources:
 
@@ -37,13 +60,13 @@ Initial target sources:
 
 The ingestion process SHALL verify source URL, version, reuse/licence status, raw-source hash and structural parser version before chunks are accepted.
 
-## Data model
+### Data model
 
 A `GovernanceSource` is the provenance root for a document/version. A `GovernanceChunk` is a structurally derived evidence object linked to exactly one source.
 
 Chunking SHALL follow native document structure rather than arbitrary visual/PDF segmentation where authoritative HTML/XML or structured text is available.
 
-## Benchmark controls
+### Benchmark controls
 
 The live demonstration is not intended to prove that one model is smarter. Record the following for each TenantSage run:
 
@@ -61,7 +84,7 @@ The live demonstration is not intended to prove that one model is smarter. Recor
 
 Do not claim comparative model accuracy unless both systems are tested under an independently controlled evaluation design.
 
-## Demo UI
+### Demo UI
 
 The TenantSage screen should expose:
 
@@ -73,5 +96,4 @@ The TenantSage screen should expose:
 - cited sources and structural paths
 - denial reason codes without exposing denied content
 - provenance hashes
-
 The strongest expected result may be: answers are materially similar, while TenantSage can prove exactly which evidence was permitted to reach generation and why.
