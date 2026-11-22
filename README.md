@@ -2,6 +2,8 @@
 
 A deliberately small retrieval-augmented generation app for answering questions from an ingested evidence corpus while showing exactly which source and chunk supported the answer.
 
+This repository also contains a separate TenantSage governed-evidence benchmark scaffold. It is not integrated into the RAG application described below.
+
 ## What it does
 
 1. User pastes source text plus its canonical URL, publisher, and version.
@@ -12,7 +14,7 @@ A deliberately small retrieval-augmented generation app for answering questions 
 6. The LLM is instructed to answer only from those retrieved chunks.
 7. The UI shows the answer plus source URL, source ID/hash, chunk ID/hash, excerpt, and similarity score.
 
-This is the minimal RAG layer only. It does not implement TenantSage DAR/EEB governance yet; it is intended to be a small real retrieval application that can later sit behind TenantSage middleware.
+The RAG application is a minimal retrieval layer. It does not implement TenantSage DAR/EEB governance; it can later sit behind TenantSage middleware.
 
 ## Architecture
 
@@ -39,6 +41,21 @@ LLM
    ↓
 answer + exact source/chunk provenance
 ```
+
+## TenantSage Governed-Evidence Benchmark scaffold
+
+This is a system-architecture demonstration, not a model benchmark. It compares a general-purpose assistant's broad provider-controlled knowledge/retrieval path with a TenantSage-governed path using a closed, sourced evidence corpus. The intended proof is which evidence was eligible or denied, why, and what reached generation.
+
+The scaffold currently includes:
+
+- `lib/models.dart` — typed source, chunk, request, decision, and result models.
+- `lib/tenantsage_middleware.dart` — fail-closed eligibility prototype and EEB identifier generation.
+- `data/source_registry.json` — source registry skeleton for EU AI Act, NIST AI RMF, OECD AI Principles, and UNESCO AI Ethics Recommendation.
+- `data/chunk_schema.example.json` — structural chunk and provenance contract.
+- `benchmark/questions.json` — 10-question live demonstration sequence.
+- `docs/ARCHITECTURE.md` — system comparison, claim boundary, and evidence-capture design.
+
+The benchmark scaffold does not yet include copied regulatory source text, production vector search, live TenantSage core adapters, or an LLM provider connection. Its core invariant is that no evidence reaches generation unless it passes the governed evidence boundary.
 
 ## Run locally
 
