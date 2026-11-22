@@ -1,0 +1,23 @@
+{
+  "chunkId": "framework:structural-path:stable-id",
+  "sourceId": "source-registry-id",
+  "frameworkId": "framework-id",
+  "content": "INGESTED_AUTHORITATIVE_TEXT",
+  "structuralPath": "Article / Section / Control / Principle",
+  "chunkType": "article|paragraph|definition|control|principle|recital|annex",
+  "jurisdictions": ["GLOBAL"],
+  "bindingStatus": "binding|voluntary|advisory",
+  "classification": "public",
+  "visibility": "public",
+  "effectiveFrom": null,
+  "effectiveTo": null,
+  "contentHash": "sha256:computed-at-ingestion",
+  "tags": ["risk-management"],
+  "provenance": {
+    "canonicalUrl": "verified-at-ingestion",
+    "retrievedAt": "UTC timestamp",
+    "parserVersion": "ingestion-pipeline-version",
+    "sourceHash": "sha256:raw-source",
+    "licenceStatus": "verified-before-distribution"
+  }
+}

@@ -1,0 +1,16 @@
+name: tenantsage_governance_benchmark
+description: Controlled governed-evidence benchmark for TenantSage.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
+  shelf_static: ^1.1.3
+  crypto: ^3.0.3
+
+dev_dependencies:
+  lints: ^5.0.0
